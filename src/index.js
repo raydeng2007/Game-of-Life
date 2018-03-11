@@ -3,48 +3,82 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { ButtonToolbar, MenuItem, DropdownButton } from 'react-bootstrap';
 
-class Box extends React.Component{
-    selectBox = ()=>{
-        this.props.selectBox(this.props.row, this.props.col)
+class Box extends React.Component {
+
+    selectBox = () => {
+        this.props.selectBox(this.props.row, this.props.col);
     }
 
-    render(){
+    render() {
         return (
             <div
                 className={this.props.boxClass}
-                id = {this.props.id}
-                onClick = {this.selectBox}
+                id={this.props.id}
+                onClick={this.selectBox}
             />
         );
     }
-
 }
 
-class Buttons extends React.Component{
+class Grid extends React.Component {
+    render() {
+        const width = (this.props.cols * 14);
+        var rowsArr = [];
 
-    
+        var boxClass = "";
+        for (var i = 0; i < this.props.rows; i++) {
+            for (var j = 0; j < this.props.cols; j++) {
+                let boxId = i + "_" + j;
 
-    render(){
+                boxClass = this.props.fullGrid[i][j] ? "box on" : "box off";
+                rowsArr.push(
+                    <Box
+                        boxClass={boxClass}
+                        key={boxId}
+                        boxId={boxId}
+                        row={i}
+                        col={j}
+                        selectBox={this.props.selectBox}
+                    />
+                );
+            }
+        }
+
+        return (
+            <div className="grid" style={{width: width}}>
+                {rowsArr}
+            </div>
+        );
+    }
+}
+
+class Buttons extends React.Component {
+
+    handleSelect = (evt) => {
+        this.props.gridSize(evt);
+    }
+
+    render() {
         return (
             <div className="center">
                 <ButtonToolbar>
-                    <button className='btn btn-info' bsStyle="info" onClick={this.props.playButton}>
-                        FUck
+                    <button className="btn btn-info" onClick={this.props.playButton}>
+                        Play
                     </button>
-                    <button className='btn btn-info' bsStyle="info" onClick={this.props.playButton}>
-                        FUck
+                    <button className="btn btn-info" onClick={this.props.pauseButton}>
+                        Pause
                     </button>
-                    <button className='btn btn-info' bsStyle="info" onClick={this.props.playButton}>
-                        FUck
+                    <button className="btn btn-info" onClick={this.props.clear}>
+                        Clear
                     </button>
-                    <button className='btn btn-info' bsStyle="info" onClick={this.props.playButton}>
-                        FUck
+                    <button className="btn btn-info" onClick={this.props.slow}>
+                        Slow
                     </button>
-                    <button className='btn btn-default' bsStyle="info" onClick={this.props.playButton}>
-                        FUck
+                    <button className="btn btn-info" onClick={this.props.fast}>
+                        Fast
                     </button>
-                    <button className='btn btn-default' bsStyle="info" onClick={this.props.playButton}>
-                        FUck
+                    <button className="btn btn-info" onClick={this.props.seed}>
+                        Seed
                     </button>
                     <DropdownButton
                         title="Grid Size"
@@ -61,92 +95,82 @@ class Buttons extends React.Component{
     }
 }
 
-class Grid extends React.Component{
-    render(){
-        const width = (this.props.cols * 16)+1;
-        var rowsArr = [];
-        var boxClass = "";
-
-        for (var i = 0; i < this.props.rows ; i++){
-            for (var j = 0; j < this.props.cols; j++){
-                let boxCord = i+'_'+j;
-
-                boxClass = this.props.fullGrid[i][j] ? 'box on' : 'box off';
-                rowsArr.push(
-                    <Box
-                        boxClass = {boxClass}
-                        key = {boxCord}
-                        boxId = {boxCord}
-                        row = {i}
-                        col = {j}
-                        selectBox = {this.props.selectBox}
-                    />
-                );
-            }
-        }
-
-        return (
-            <div className='grid' style={{width: width}}>
-                {rowsArr}
-            </div>
-        );
-    }
-}
-
-class Main extends React.Component{
-
-    constructor(){
+class Main extends React.Component {
+    constructor() {
         super();
         this.speed = 100;
-        this.slow = 50;
         this.rows = 30;
         this.cols = 50;
+
         this.state = {
-            generations:0,
-            fullGrid: Array(this.rows).fill().map(()=> Array(this.cols).fill(false))
+            generation: 0,
+            fullGrid: Array(this.rows).fill().map(() => Array(this.cols).fill(false))
         }
     }
 
-    selectBox = (row,col)=>{
+    selectBox = (row, col) => {
         let gridCopy = arrayClone(this.state.fullGrid);
         gridCopy[row][col] = !gridCopy[row][col];
         this.setState({
-            fullGrid: gridCopy,
-        })
+            fullGrid: gridCopy
+        });
     }
 
-    playButton = ()=>{
+
+
+    playButton = () => {
         clearInterval(this.intervalId);
         this.intervalId = setInterval(this.play, this.speed);
     }
 
-    pauseButton = ()=>{
+    pauseButton = () => {
         clearInterval(this.intervalId);
-        this.intervalId = setInterval(this.play, this.slow);
     }
 
-    slow = ()=>{
-        this.speed = 50
+    slow = () => {
+        this.speed = 1000;
+        this.playButton();
     }
 
-    clear = ()=>{
+    fast = () => {
+        this.speed = 100;
+        this.playButton();
+    }
+
+    clear = () => {
+        var g = Array(this.rows).fill().map(() => Array(this.cols).fill(false));
+
         this.setState({
-            generations:0,
-            fullGrid: Array(this.rows).fill().map(()=> Array(this.cols).fill(false))
-        })
+            fullGrid: g,
+            generation: 0
+        });
     }
 
+    gridSize = (size) => {
+        switch (size) {
+            case "1":
+                this.cols = 20;
+                this.rows = 10;
+                break;
+            case "2":
+                this.cols = 50;
+                this.rows = 30;
+                break;
+            default:
+                this.cols = 70;
+                this.rows = 50;
+        }
+        this.clear();
 
+    }
 
     play = () => {
-
         let g1 = this.state.fullGrid;
         let g2 = arrayClone(this.state.fullGrid);
 
         for (let i = 0; i < this.rows; i++) {
             for (let j = 0; j < this.cols; j++) {
                 let count = 0;
-
                 if (i > 0)
                     if (g1[i - 1][j]) count++;
                 if (i > 0 && j > 0)
@@ -155,8 +179,7 @@ class Main extends React.Component{
                     if (g1[i - 1][j + 1]) count++;
                 if (j < this.cols - 1)
                     if (g1[i][j + 1]) count++;
-                if (j > 0)
-                    if (g1[i][j - 1]) count++;
+                if (j > 0) if (g1[i][j - 1]) count++;
                 if (i < this.rows - 1)
                     if (g1[i + 1][j]) count++;
                 if (i < this.rows - 1 && j > 0)
@@ -167,64 +190,60 @@ class Main extends React.Component{
                 if (!g1[i][j] && count === 3) g2[i][j] = true;
             }
         }
-
         this.setState({
             fullGrid: g2,
-            generations: this.state.generations + 1
+            generation: this.state.generation + 1
         });
 
     }
 
-    seedBoard = ()=>{
+    seed = () => {
         let gridCopy = arrayClone(this.state.fullGrid);
-        for (let i = 0; i< this.rows; i++){
-            for (let j = 0;j<this.cols; j++){
-                let rand = Math.ceil(Math.random()*6);
-                if (rand%2 === 1){
+        for (let i = 0; i < this.rows; i++) {
+            for (let j = 0; j < this.cols; j++) {
+                let rand = Math.ceil(Math.random() * 6)%2
+                if ( rand === 1) {
                     gridCopy[i][j] = true;
                 }
             }
         }
         this.setState({
-            fullGrid: gridCopy,
+            fullGrid: gridCopy
         });
     }
 
-    componentDidMount(){
-        this.seedBoard();
-        //this.playButton();
+    componentDidMount() {
+        this.seed();
+        this.playButton();
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <div>
-                <h1>Game of Life</h1>
+                <h1>The Game of Life</h1>
                 <Buttons
-                    playButton = {this.playButton()}
-                    pauseButton = {this.pauseButton()}
-                    slow = {this.slow()}
-                    fast = {this.fast()}
-                    clear = {this.clear()}
-                    seed = {this.seedBoard()}
-                    gridSize = {this.gridSize()}
-                 />
-                <Grid
-                fullGrid = {this.state.fullGrid}
-                rows = {this.rows}
-                cols = {this.cols}
-                selectBox = {this.selectBox}
+                    playButton={this.playButton}
+                    pauseButton={this.pauseButton}
+                    slow={this.slow}
+                    fast={this.fast}
+                    clear={this.clear}
+                    seed={this.seed}
+                    gridSize={this.gridSize}
                 />
-                <h2>Generations : {this.state.generations}</h2>
-
+                <Grid
+                    fullGrid={this.state.fullGrid}
+                    rows={this.rows}
+                    cols={this.cols}
+                    selectBox={this.selectBox}
+                />
+                <h2>Generations: {this.state.generation}</h2>
             </div>
         );
-
     }
 }
 
-function arrayClone(arr){
+function arrayClone(arr) {
     return JSON.parse(JSON.stringify(arr));
 }
 
 ReactDOM.render(<Main />, document.getElementById('root'));
-

@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import { ButtonToolbar, MenuItem, DropdownButton } from 'react-bootstrap';
 
 class Box extends React.Component{
     selectBox = ()=>{
@@ -17,6 +18,47 @@ class Box extends React.Component{
         );
     }
 
+}
+
+class Buttons extends React.Component{
+
+    
+
+    render(){
+        return (
+            <div className="center">
+                <ButtonToolbar>
+                    <button className='btn btn-info' bsStyle="info" onClick={this.props.playButton}>
+                        FUck
+                    </button>
+                    <button className='btn btn-info' bsStyle="info" onClick={this.props.playButton}>
+                        FUck
+                    </button>
+                    <button className='btn btn-info' bsStyle="info" onClick={this.props.playButton}>
+                        FUck
+                    </button>
+                    <button className='btn btn-info' bsStyle="info" onClick={this.props.playButton}>
+                        FUck
+                    </button>
+                    <button className='btn btn-default' bsStyle="info" onClick={this.props.playButton}>
+                        FUck
+                    </button>
+                    <button className='btn btn-default' bsStyle="info" onClick={this.props.playButton}>
+                        FUck
+                    </button>
+                    <DropdownButton
+                        title="Grid Size"
+                        id="size-menu"
+                        onSelect={this.handleSelect}
+                    >
+                        <MenuItem eventKey="1">20x10</MenuItem>
+                        <MenuItem eventKey="2">50x30</MenuItem>
+                        <MenuItem eventKey="3">70x50</MenuItem>
+                    </DropdownButton>
+                </ButtonToolbar>
+            </div>
+        )
+    }
 }
 
 class Grid extends React.Component{
@@ -56,6 +98,7 @@ class Main extends React.Component{
     constructor(){
         super();
         this.speed = 100;
+        this.slow = 50;
         this.rows = 30;
         this.cols = 50;
         this.state = {
@@ -75,6 +118,22 @@ class Main extends React.Component{
     playButton = ()=>{
         clearInterval(this.intervalId);
         this.intervalId = setInterval(this.play, this.speed);
+    }
+
+    pauseButton = ()=>{
+        clearInterval(this.intervalId);
+        this.intervalId = setInterval(this.play, this.slow);
+    }
+
+    slow = ()=>{
+        this.speed = 50
+    }
+
+    clear = ()=>{
+        this.setState({
+            generations:0,
+            fullGrid: Array(this.rows).fill().map(()=> Array(this.cols).fill(false))
+        })
     }
 
 
@@ -133,13 +192,22 @@ class Main extends React.Component{
 
     componentDidMount(){
         this.seedBoard();
-        this.playButton();
+        //this.playButton();
     }
 
     render(){
         return(
             <div>
                 <h1>Game of Life</h1>
+                <Buttons
+                    playButton = {this.playButton()}
+                    pauseButton = {this.pauseButton()}
+                    slow = {this.slow()}
+                    fast = {this.fast()}
+                    clear = {this.clear()}
+                    seed = {this.seedBoard()}
+                    gridSize = {this.gridSize()}
+                 />
                 <Grid
                 fullGrid = {this.state.fullGrid}
                 rows = {this.rows}

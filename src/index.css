@@ -38,6 +38,7 @@ body {
 }
 
 h1, h2, h3, h4 {
+  font-family: 'Rammetto One', cursive;
   color: white;
   margin: auto;
   text-align: center;

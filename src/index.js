@@ -89,7 +89,7 @@ class Buttons extends React.Component {
                     >
                         <MenuItem eventKey="1">Random</MenuItem>
                         <MenuItem eventKey="2">Glider</MenuItem>
-                        <MenuItem eventKey="3">Gun</MenuItem>
+                        <MenuItem eventKey="3">Explode</MenuItem>
                     </DropdownButton>
                     <DropdownButton
                         bsStyle = 'info'
@@ -184,9 +184,9 @@ class Main extends React.Component {
             case "2":
                 this.glider();
                 break;
-            default:
-                this.cols = 70;
-                this.rows = 50;
+            case "3":
+                this.explode();
+                break;
         }
 
 
@@ -248,6 +248,21 @@ class Main extends React.Component {
         gridCopy[2][2] = true
         gridCopy[2][1] = true
         gridCopy[1][0] = true
+        this.setState({
+
+            fullGrid:gridCopy
+        })
+        this.playButton()
+    }
+
+    explode = ()=>{
+
+        let gridCopy = arrayClone(this.state.fullGrid);
+        gridCopy[14][22] = true
+        gridCopy[14][23] = true
+        gridCopy[14][24] = true
+        gridCopy[13][23] = true
+
         this.setState({
 
             fullGrid:gridCopy

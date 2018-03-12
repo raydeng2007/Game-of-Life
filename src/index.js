@@ -103,6 +103,7 @@ class Buttons extends React.Component {
                         <MenuItem eventKey="3">70x50</MenuItem>
                     </DropdownButton>
                 </ButtonToolbar>
+
             </div>
         )
     }
@@ -301,6 +302,19 @@ class Main extends React.Component {
         return (
             <div>
                 <h1>Conway's Game of Life</h1>
+                <p className='center'>
+                    Conway's Game of Life is a cellular automaton that was invented by British mathematician John Conway<br/>
+                    in 1970, this '0 player game' imitates the idea of cell repopulating over a period of time. To learn <br/>
+                    more, here's a <a href='https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life'> link to the wiki page</a><br/>
+                    Each blue cell represents a living cell and each gray cell represents a dead cell. Each cell on the board<br/>
+                    follows a specific set of rules: <br/>
+                    1) Any live cell with fewer than two live neighbours dies, as if caused by underpopulation.<br/>
+                    2) Any live cell with two or three live neighbours lives on to the next generation.<br/>
+                    3) Any live cell with more than three live neighbours dies, as if by overpopulation.<br/>
+                    4) Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.<br/>
+                    You can also pre-populate the board with existing patterns in the <i>Seed Style</i> section of the menu.<br/>
+                </p>
+
                 <Buttons
                     playButton={this.playButton}
                     pauseButton={this.pauseButton}

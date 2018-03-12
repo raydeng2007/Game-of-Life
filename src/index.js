@@ -58,6 +58,10 @@ class Buttons extends React.Component {
         this.props.gridSize(evt);
     }
 
+    handleSelectSeed = (evt) => {
+        this.props.seedStyle(evt);
+    }
+
     render() {
         return (
             <div className="center">
@@ -77,10 +81,18 @@ class Buttons extends React.Component {
                     <button className="btn btn-info" onClick={this.props.fast}>
                         Fast
                     </button>
-                    <button className="btn btn-info" onClick={this.props.seed}>
-                        Seed
-                    </button>
                     <DropdownButton
+                        bsStyle = 'info'
+                        title="Seed Style"
+                        id="seed-menu"
+                        onSelect={this.handleSelectSeed}
+                    >
+                        <MenuItem eventKey="1">Random</MenuItem>
+                        <MenuItem eventKey="2">Glider</MenuItem>
+                        <MenuItem eventKey="3">Gun</MenuItem>
+                    </DropdownButton>
+                    <DropdownButton
+                        bsStyle = 'info'
                         title="Grid Size"
                         id="size-menu"
                         onSelect={this.handleSelect}
@@ -164,6 +176,22 @@ class Main extends React.Component {
 
     }
 
+    seedStyle = (event)=>{
+        switch (event) {
+            case "1":
+                this.seed();
+                break;
+            case "2":
+                this.glider();
+                break;
+            default:
+                this.cols = 70;
+                this.rows = 50;
+        }
+
+
+    }
+
     play = () => {
         let g1 = this.state.fullGrid;
         let g2 = arrayClone(this.state.fullGrid);
@@ -212,6 +240,21 @@ class Main extends React.Component {
         });
     }
 
+    glider = ()=>{
+
+        let gridCopy = arrayClone(this.state.fullGrid);
+        gridCopy[0][2] = true
+        gridCopy[1][2] = true
+        gridCopy[2][2] = true
+        gridCopy[2][1] = true
+        gridCopy[1][0] = true
+        this.setState({
+
+            fullGrid:gridCopy
+        })
+        this.playButton()
+    }
+
     componentDidMount() {
         this.seed();
         this.playButton();
@@ -220,7 +263,7 @@ class Main extends React.Component {
     render() {
         return (
             <div>
-                <h1>The Game of Life</h1>
+                <h1>Conway's Game of Life</h1>
                 <Buttons
                     playButton={this.playButton}
                     pauseButton={this.pauseButton}
@@ -229,6 +272,7 @@ class Main extends React.Component {
                     clear={this.clear}
                     seed={this.seed}
                     gridSize={this.gridSize}
+                    seedStyle={this.seedStyle}
                 />
                 <Grid
                     fullGrid={this.state.fullGrid}

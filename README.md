@@ -5,6 +5,8 @@ Conway's Game of Life is a cellular automaton that was invented by British mathe
 in 1970, this '0 player game' imitates the idea of cell repopulating over a period of time. To learn 
 more, here's a [link](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) to the wiki page. 
 
+Here's the [link](http://ray-game-of-life.surge.sh) to the actual game. 
+
 Each blue cell represents a living cell and each gray cell represents a dead cell. Each cell on the board
 follows a specific set of rules: 
 
